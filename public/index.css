@@ -1,0 +1,22 @@
+body {
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0;
+  overflow: hidden;
+}
+
+#github {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 2em;
+  height: 2em;
+  margin: 1em;
+  padding: 0.3em;
+  border-radius: 50%;
+  background: white;
+}
+
+#githubImg {
+  width: 2em;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "connected",
+  "version": "1.0.0",
+  "description": "connected uses 3d-force-graph to map out the connections between my friends, and the friends of my friends. the dataset was acquired through web scraping using a python + selenium script.",
+  "main": "src/index.js",
+  "scripts": {
+    "convert": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diragb/connected.git"
+  },
+  "keywords": [
+    "network",
+    "data",
+    "facebook"
+  ],
+  "author": "Dirag Biswas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diragb/connected/issues"
+  },
+  "homepage": "https://github.com/diragb/connected#readme"
+}

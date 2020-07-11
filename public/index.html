@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="fbmap uses 3d-force-graph to map out the connections between my friends, and the friends of my friends. the dataset was acquired through web scraping using a python + selenium script."
+    />
+    <link rel="stylesheet" href="index.css" />
+    <script src="https://unpkg.com/three"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
+    <title>fbmap | by diragb</title>
+  </head>
+  <body>
+    <noscript>bruh u need to enable JavaScript™ to view this website</noscript>
+    <div id="3d-graph"></div>
+    <a href="https://github.com/diragb/" target="_blank">
+      <div id="github">
+        <img
+          id="githubImg"
+          src="https://image.flaticon.com/icons/svg/25/25231.svg"
+        />
+      </div>
+    </a>
+    <script type="module">
+      import { UnrealBloomPass } from "https://unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+
+      const distance = 8000;
+
+      const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
+        .jsonUrl("output_dataset.json")
+        .nodeVal((node) => (node.id === "sanchari.goswami.98" ? 40 : 7))
+        .nodeLabel("id")
+        .nodeAutoColorBy("group")
+        .linkColor("#dfe6e9")
+        .linkOpacity(0.05)
+        .linkCurvature(Math.random())
+        .linkCurveRotation(Math.random() * 360)
+        .cameraPosition({ z: distance })
+        .enableNodeDrag(false)
+        .onNodeClick((node) => {
+          console.log(`Navigating to https://www.facebook.com/${node.id}`);
+          window.open(`https://www.facebook.com/${node.id}`, "_blank");
+        })
+        .numDimensions(3);
+
+      const bloomPass = new UnrealBloomPass();
+      bloomPass.strength = 2;
+      bloomPass.radius = 1;
+      bloomPass.threshold = 0.1;
+      Graph.postProcessingComposer().addPass(bloomPass);
+
+      // Spread nodes a little wider
+      Graph.d3Force("charge").strength(-150);
+    </script>
+    <a href="https://creativemarket.com/Becris" title="Becris">Becris</a> from
+    <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+  </body>
+</html>
