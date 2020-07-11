@@ -7,16 +7,24 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="fbmap uses 3d-force-graph to map out the connections between my friends, and the friends of my friends. the dataset was acquired through web scraping using a python + selenium script."
+      content="connected uses 3d-force-graph to map out the connections between my friends, and the friends of my friends. the dataset was acquired through web scraping using a python + selenium script."
     />
     <link rel="stylesheet" href="index.css" />
-    <script src="https://unpkg.com/three"></script>
-    <script src="https://unpkg.com/3d-force-graph"></script>
-    <title>fbmap | by diragb</title>
+
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone"></script>
+
+    <script type="module">
+      import { UnrealBloomPass } from "https://unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+      window.UnrealBloomPass = UnrealBloomPass;
+    </script>
+
+    <script src="https://unpkg.com/react-force-graph-3d"></script>
+    <title>connected | by diragb</title>
   </head>
   <body>
-    <noscript>bruh u need to enable JavaScript™ to view this website</noscript>
-    <div id="3d-graph"></div>
+    <div id="graph"></div>
     <a href="https://github.com/diragb/" target="_blank">
       <div id="github">
         <img
@@ -25,38 +33,46 @@
         />
       </div>
     </a>
-    <script type="module">
-      import { UnrealBloomPass } from "https://unpkg.com/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+    <script type="text/jsx">
+      const { useRef, useEffect } = React;
 
-      const distance = 8000;
+      fetch('https://raw.githubusercontent.com/diragb/connected/master/public/output_dataset.json?token=AIZ7NOAP26D6RNPWSA525D27BGX66').then(res => res.json()).then(data => {
+        const FocusGraph = () => {
+          const fgRef = useRef();
 
-      const Graph = ForceGraph3D()(document.getElementById("3d-graph"))
-        .jsonUrl(
-          "https://raw.githubusercontent.com/diragb/connected/master/public/output_dataset.json?token=AIZ7NOB3QB6LZW2OV6EZFEC7BFJFC"
-        )
-        .nodeVal((node) => (node.id === "sanchari.goswami.98" ? 40 : 7))
-        .nodeLabel("id")
-        .nodeAutoColorBy("group")
-        .linkColor("#dfe6e9")
-        .linkOpacity(0.05)
-        .linkCurvature(Math.random())
-        .linkCurveRotation(Math.random() * 360)
-        .cameraPosition({ z: distance })
-        .enableNodeDrag(false)
-        .onNodeClick((node) => {
-          console.log(`Navigating to https://www.facebook.com/${node.id}`);
-          window.open(`https://www.facebook.com/${node.id}`, "_blank");
-        })
-        .numDimensions(3);
+          useEffect(() => {
+            const bloomPass = new UnrealBloomPass();
+            bloomPass.strength = 2;
+            bloomPass.radius = 1;
+            bloomPass.threshold = 0.1;
+            fgRef.current.postProcessingComposer().addPass(bloomPass);
+            fgRef.current.d3Force("charge").strength(-150);
+            fgRef.current.cameraPosition({ z: 15000 });
+          }, []);
 
-      const bloomPass = new UnrealBloomPass();
-      bloomPass.strength = 2;
-      bloomPass.radius = 1;
-      bloomPass.threshold = 0.1;
-      Graph.postProcessingComposer().addPass(bloomPass);
+          return <ForceGraph3D
+            ref={fgRef}
+            graphData={data}
+            nodeVal={40}
+            nodeLabel="id"
+            nodeAutoColorBy="group"
+            linkColor="#dfe6e9"
+            linkOpacity={0.05}
+            linkCurvature={Math.random()}
+            linkCurveRotation={Math.random() * 360}
+            enableNodeDrag={false}
+            onNodeClick={(node) => {
+              console.log(`Navigating to https://www.facebook.com/${node.id}`);
+              window.open(`https://www.facebook.com/${node.id}`, "_blank");
+            }}
+          />;
+        };
 
-      // Spread nodes a little wider
-      Graph.d3Force("charge").strength(-150);
+        ReactDOM.render(
+          <FocusGraph />,
+          document.getElementById('graph')
+        );
+      });
     </script>
     <a href="https://creativemarket.com/Becris" title="Becris">Becris</a> from
     <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
