@@ -33,46 +33,57 @@
         />
       </div>
     </a>
+    "source": "SayaChanKys"
     <script type="text/jsx">
       const { useRef, useEffect } = React;
 
-      fetch('https://raw.githubusercontent.com/diragb/connected/master/public/output_dataset.json?token=AIZ7NODJBE3FE2A5UNWXMTK7BG6LU').then(res => res.json()).then(data => {
-        const FocusGraph = () => {
-          const fgRef = useRef();
+      let nodes = await fetch('');
+      nodes = nodes.json();
+      let links = await fetch('');
+      links = links.json();
+      data = {
+        nodes,
+        links
+      };
+      
 
-          useEffect(() => {
-            const bloomPass = new UnrealBloomPass();
-            bloomPass.strength = 2;
-            bloomPass.radius = 1;
-            bloomPass.threshold = 0.1;
-            fgRef.current.postProcessingComposer().addPass(bloomPass);
-            fgRef.current.d3Force("charge").strength(-150);
-            fgRef.current.cameraPosition({ z: 15000 });
-          }, []);
+      // fetch('https://raw.githubusercontent.com/diragb/connected/master/public/output_dataset.json?token=AIZ7NOCLQMXGEPTXY43R2MK7BHGHW').then(res => res.json()).then(data => {
+      const FocusGraph = () => {
+        const fgRef = useRef();
 
-          return <ForceGraph3D
-            ref={fgRef}
-            graphData={data}
-            nodeVal={40}
-            nodeLabel="id"
-            nodeAutoColorBy="group"
-            linkColor="#dfe6e9"
-            linkOpacity={0.05}
-            linkCurvature={Math.random()}
-            linkCurveRotation={Math.random() * 360}
-            enableNodeDrag={false}
-            onNodeClick={(node) => {
-              console.log(`Navigating to https://www.facebook.com/${node.id}`);
-              window.open(`https://www.facebook.com/${node.id}`, "_blank");
-            }}
-          />;
-        };
+        useEffect(() => {
+          const bloomPass = new UnrealBloomPass();
+          bloomPass.strength = 2;
+          bloomPass.radius = 1;
+          bloomPass.threshold = 0.1;
+          fgRef.current.postProcessingComposer().addPass(bloomPass);
+          fgRef.current.d3Force("charge").strength(-150);
+          fgRef.current.cameraPosition({ z: 15000 });
+        }, []);
 
-        ReactDOM.render(
-          <FocusGraph />,
-          document.getElementById('graph')
-        );
-      });
+        return <ForceGraph3D
+          ref={fgRef}
+          graphData={data}
+          nodeVal={40}
+          nodeLabel="id"
+          nodeAutoColorBy="group"
+          linkColor="#dfe6e9"
+          linkOpacity={0.05}
+          linkCurvature={Math.random()}
+          linkCurveRotation={Math.random() * 360}
+          enableNodeDrag={false}
+          onNodeClick={(node) => {
+            console.log(`Navigating to https://www.facebook.com/${node.id}`);
+            window.open(`https://www.facebook.com/${node.id}`, "_blank");
+          }}
+        />;
+      };
+
+      ReactDOM.render(
+        <FocusGraph />,
+        document.getElementById('graph')
+      );
+      // });
     </script>
     <a href="https://creativemarket.com/Becris" title="Becris">Becris</a> from
     <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>

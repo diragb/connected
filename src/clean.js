@@ -22,7 +22,7 @@ for (let linkObjectIndex = 0; linkObjectIndex < linkSize; linkObjectIndex++) {
   for (let nodeObjectIndex = 0; nodeObjectIndex < nodeSize; nodeObjectIndex++) {
     let nodeID = dirtyData["nodes"][nodeObjectIndex]["id"];
 
-    console.log("\x1b[31m", `Testing ${nodeID} against ${linkTarget}`);
+    console.log(`Testing ${nodeID} against ${linkTarget}`);
 
     if (linkTarget === nodeID) {
       // Node found.
@@ -37,7 +37,7 @@ for (let linkObjectIndex = 0; linkObjectIndex < linkSize; linkObjectIndex++) {
   } else {
     // Node not found. Delete link.
     cleanedIDs.append(linkTarget);
-    console.log(`Cleaning ${linkTarget}, who is the target of ${linkSource}.`);
+    console.log(`🛑 Cleaning ${linkTarget}, who is the target of ${linkSource}.`);
     dirtyData["link"].splice(linkObjectIndex, 1);
   }
 }
