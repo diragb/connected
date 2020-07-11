@@ -37,11 +37,20 @@
     <script type="text/jsx">
       const { useRef, useEffect } = React;
 
-      let nodes = await fetch('');
-      nodes = nodes.json();
-      let links = await fetch('');
-      links = links.json();
-      data = {
+      let nodes_1 = await fetch('');
+      let nodes_2 = await fetch('');
+      nodes_1 = nodes_1.json();
+      nodes_2 = nodes_2.json();
+
+      let links_1 = await fetch('');
+      let links_2 = await fetch('');
+      links_1 = links_1.json();
+      links_2 = links_2.json();
+
+      let nodes = [...nodes_1["nodes"], ...nodes_2["nodes"]];
+      let links = [...links_1["links"], ...links_2["links"]];
+
+      let data = {
         nodes,
         links
       };
