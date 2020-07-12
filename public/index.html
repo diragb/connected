@@ -10,6 +10,10 @@
       content="connected uses 3d-force-graph to map out the connections between my friends, and the friends of my friends. the dataset was acquired through web scraping using a python + selenium script."
     />
     <link rel="stylesheet" href="index.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inter:100,200,300,400,500,600,700,800,900&display=swap&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese"
+      rel="stylesheet"
+    />
 
     <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
@@ -33,15 +37,14 @@
         />
       </div>
     </a>
-    "source": "SayaChanKys"
     <script type="text/jsx">
-      const { useRef, useEffect } = React;
-      
+      const { useState, useRef, useEffect } = React;
+
       // let nodes_1 = await fetch('https://raw.githubusercontent.com/diragb/connected/master/public/nodes_1.json');
       // let nodes_2 = await fetch('https://raw.githubusercontent.com/diragb/connected/master/public/nodes_2.json');
       // nodes_1 = nodes_1.json();
       // nodes_2 = nodes_2.json();
-      
+
       // let links_1 = await fetch('https://raw.githubusercontent.com/diragb/connected/master/public/links_1.json');
       // let links_2 = await fetch('https://raw.githubusercontent.com/diragb/connected/master/public/links_2.json');
       // links_1 = links_1.json();
@@ -54,47 +57,84 @@
       //   nodes,
       //   links
       // };
-      
+
 
       fetch('https://raw.githubusercontent.com/diragb/connected/master/public/output_dataset.json').then(res => res.json()).then(data => {
-      const FocusGraph = () => {
-        const fgRef = useRef();
+        const LoadingCover = (props) => {
+          let zIndex = props.visible === true ? 100 : -1;
+          let loadingMessage = props.visible === true ? 'Loading 117927 nodes and 117921 links..' : '';
 
-        useEffect(() => {
-          const bloomPass = new UnrealBloomPass();
-          bloomPass.strength = 2;
-          bloomPass.radius = 1;
-          bloomPass.threshold = 0.1;
-          fgRef.current.postProcessingComposer().addPass(bloomPass);
-          fgRef.current.d3Force("charge").strength(-150);
-          fgRef.current.cameraPosition({ z: 15000 });
-        }, []);
+          return (
+            <div style={{position: 'absolute', top: 0, left: 0, zIndex, display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh', background: '#010B13'}}>
+              <div>
+                <div style={{ fontSize: '7em', fontWeight: '700', color: '#F2F3F4' }}>{ props.visible === true ? 'Loading.. ⌛' : '' }</div>
+                <div style={{ marginTop: '0.3em', marginLeft: '0.3em', fontSize: '1em', fontWeight: '600', color: '#F2F3F4' }}>{ loadingMessage }</div>
+              </div>
+            </div>
+          );
+        };
 
-        return <ForceGraph3D
-          ref={fgRef}
-          graphData={data}
-          nodeVal={40}
-          nodeLabel="id"
-          nodeAutoColorBy="group"
-          linkColor="#dfe6e9"
-          linkOpacity={0.05}
-          linkCurvature={Math.random()}
-          linkCurveRotation={Math.random() * 360}
-          enableNodeDrag={false}
-          onNodeClick={(node) => {
-            console.log(`Navigating to https://www.facebook.com/${node.id}`);
-            window.open(`https://www.facebook.com/${node.id}`, "_blank");
-          }}
-        />;
-      };
+        const FocusGraph = () => {
+          const [ graphLoaded, setGraphLoaded ] = useState(false);
+          const fgRef = useRef();
 
-      ReactDOM.render(
-        <FocusGraph />,
-        document.getElementById('graph')
-      );
+          useEffect(() => {
+            const bloomPass = new UnrealBloomPass();
+            bloomPass.strength = 2;
+            bloomPass.radius = 1;
+            bloomPass.threshold = 0.1;
+            fgRef.current.postProcessingComposer().addPass(bloomPass);
+            fgRef.current.d3Force("charge").strength(-170);
+            fgRef.current.cameraPosition({ z: 20000 });
+          }, []);
+
+          const queryString = window.location.search;
+          const urlParams = new URLSearchParams(queryString);
+          let canvasSizePercent = parseInt(urlParams.get('size'));
+
+          if (canvasSizePercent === null || canvasSizePercent > 100 || canvasSizePercent < 0) {
+            canvasSizePercent = 1;
+          } else {
+            canvasSizePercent = canvasSizePercent/100;
+          }
+
+          return (
+            <div>
+              <ForceGraph3D
+                ref={fgRef}
+                graphData={data}
+                width={window.innerWidth * canvasSizePercent}
+                height={window.innerHeight * canvasSizePercent}
+                backgroundColor={"#010B13"}
+                showNavInfo={false}
+                nodeVal={40}
+                nodeLabel="id"
+                nodeAutoColorBy="group"
+                linkColor="#dfe6e9"
+                linkOpacity={0.05}
+                linkCurvature={Math.random()}
+                linkCurveRotation={Math.random() * 360}
+                enableNodeDrag={false}
+                onNodeClick={(node) => {
+                  console.log(`Navigating to https://www.facebook.com/${node.id}`);
+                  window.open(`https://www.facebook.com/${node.id}`, "_blank");
+                }}
+                warmupTicks={20}
+                cooldownTicks={0}
+                onEngineStop={() => {
+                  setGraphLoaded(true);
+                }}
+              />
+              <LoadingCover visible={!graphLoaded} />
+            </div>
+          );
+        };
+
+        ReactDOM.render(
+          <FocusGraph />,
+          document.getElementById('graph')
+        );
       });
     </script>
-    <a href="https://creativemarket.com/Becris" title="Becris">Becris</a> from
-    <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
   </body>
 </html>

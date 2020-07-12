@@ -2,7 +2,11 @@ body {
   width: 100vw !important;
   height: 100vh !important;
   margin: 0;
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
+  background-color: #010b13;
 }
 
 #github {
@@ -19,4 +23,14 @@ body {
 
 #githubImg {
   width: 2em;
+}
+
+#graph {
+  position: absolute;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
