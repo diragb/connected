@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-let dirtyData = JSON.parse(fs.readFileSync("../public/output_dataset.json"));
+let dirtyData = JSON.parse(fs.readFileSync("dirty_dataset.json"));
 
 const nodeSize = dirtyData["nodes"].length;
 const linkSize = dirtyData["links"].length;
@@ -17,8 +17,10 @@ for (let linkObjectIndex = 0; linkObjectIndex < linkSize; linkObjectIndex++) {
   let linkTarget = dirtyData["links"][linkObjectIndex]["target"];
   foundFlag = false;
 
-  console.log(`Scanning ${linkTarget}, which is ${linkObjectIndex} of ${linkSize}...`);
-  
+  console.log(
+    `Scanning ${linkTarget}, which is ${linkObjectIndex} of ${linkSize}...`
+  );
+
   for (let nodeObjectIndex = 0; nodeObjectIndex < nodeSize; nodeObjectIndex++) {
     let nodeID = dirtyData["nodes"][nodeObjectIndex]["id"];
 
@@ -37,7 +39,9 @@ for (let linkObjectIndex = 0; linkObjectIndex < linkSize; linkObjectIndex++) {
   } else {
     // Node not found. Delete link.
     cleanedIDs.append(linkTarget);
-    console.log(`🛑 Cleaning ${linkTarget}, who is the target of ${linkSource}.`);
+    console.log(
+      `🛑 Cleaning ${linkTarget}, who is the target of ${linkSource}.`
+    );
     dirtyData["link"].splice(linkObjectIndex, 1);
   }
 }
@@ -45,4 +49,4 @@ for (let linkObjectIndex = 0; linkObjectIndex < linkSize; linkObjectIndex++) {
 console.log(`Cleaned: ${cleanedIDs}`);
 
 let cleanData = JSON.stringify(dirtyData, null, 4);
-fs.writeFileSync("../public/clean_dataset.json", cleanData);
+fs.writeFileSync("../public/output_dataset.json", cleanData);

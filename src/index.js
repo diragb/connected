@@ -143,4 +143,4 @@ for (let myFriendIndex = 0; myFriendIndex < rawDatasetLength; myFriendIndex++) {
 }
 
 let parsedData = JSON.stringify(outputDataset, null, 4);
-fs.writeFileSync("../public/output_dataset.json", parsedData);
+fs.writeFileSync("dirty_dataset.json", parsedData);
